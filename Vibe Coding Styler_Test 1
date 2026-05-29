@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>OCHA Allocation Dashboard</title>
+
+<!-- ✅ Correct Roboto font -->
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+
+<!-- ✅ Correct Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --primary:#009EDB;
+  --primary-dark:#004987;
+  --bg:#f5f7fa;
+  --card:#ffffff;
+  --border:#e5e7eb;
+  --text:#111827;
+  --muted:#6b7280;
+  --accent:#c53030;
+  --space:16px;
+}
+
+body {
+  margin:0;
+  font-family:"Roboto",sans-serif;
+  background:var(--bg);
+}
+
+/* HEADER */
+.header {
+  background:var(--primary);
+  color:white;
+  display:flex;
+  align-items:center;
+  padding:10px 20px;
+}
+.header img {
+  height:36px;
+  margin-right:10px;
+}
+
+/* LAYOUT */
+.container {
+  max-width:1200px;
+  margin:auto;
+  padding:20px;
+}
+
+/* GRID */
+.grid {
+  display:grid;
+  gap:16px;
+}
+.grid-4 {
+  grid-template-columns:repeat(auto-fit,minmax(220px,1fr));
+}
+
+/* CARD */
+.card {
+  background:white;
+  border:1px solid var(--border);
+  padding:16px;
+}
+
+/* KPI */
+.kpi-value {
+  font-size:22px;
+  font-weight:700;
+  color:var(--primary-dark);
+}
+.kpi-label {
+  font-size:13px;
+  color:var(--muted);
+}
+
+/* FILTER */
+select {
+  padding:6px;
+  border:1px solid var(--border);
+}
+
+/* TABLE */
+table {
+  width:100%;
+  border-collapse:collapse;
+}
+th,td {
+  padding:10px;
+  border-bottom:1px solid var(--border);
+}
+th { background:#eef3f7; }
+
+.highlight-max { color:var(--primary-dark); font-weight:bold; }
+.highlight-min { color:var(--accent); font-weight:bold; }
+
+/* CHART */
+.chart-container {
+  height:350px;
+}
+
+/* FOOTER */
+footer {
+  background:#1f2937;
+  color:#ccc;
+  padding:20px;
+  font-size:12px;
+}
+.footer {
+  display:flex;
+  flex-wrap:wrap;
+  justify-content:space-between;
+  gap:20px;
+}
+footer a {
+  color:#9ca3af;
+  text-decoration:none;
+}
+footer a:hover { text-decoration:underline; }
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <img src="OCHA Logo_beside_blue.png" alt="OCHA logo">
+  <div>Humanitarian Allocation Dashboard</div>
+</div>
+
+<div class="container">
+
+<h1>Allocation Amount by Country</h1>
+
+<div>
+  <label>Filter Region:</label>
+  <select id="filter">
+    <option value="all">All</option>
+    <option>Africa</option>
+    <option>Asia</option>
+  </select>
+</div>
+
+<br>
+
+<!-- KPI -->
+<div class="grid grid-4">
+  <div class="card"><div class="kpi-value" id="total"></div><div class="kpi-label">Total Allocation</div></div>
+  <div class="card"><div class="kpi-value" id="highest"></div><div class="kpi-label">Highest Country</div></div>
+  <div class="card"><div class="kpi-value" id="lowest"></div><div class="kpi-label">Lowest Country</div></div>
+  <div class="card"><div class="kpi-value" id="ratio"></div><div class="kpi-label">Ratio</div></div>
+</div>
+
+<br>
+
+<!-- CHART -->
+<div class="card chart-container">
+  <canvas id="chart"></canvas>
+</div>
+
+<br>
+
+<!-- COMPARISON -->
+<div class="card" id="comparison"></div>
+
+<br>
+
+<!-- TABLE -->
+<div class="card">
+<table>
+<thead>
+<tr><th>Country</th><th>Allocation (USD)</th></tr>
+</thead>
+<tbody id="table"></tbody>
+</table>
+</div>
+
+</div>
+
+<!-- FOOTER -->
+<footer>
+<div class="footer">
+  <div><strong>Powered by OCHA Data Systems</strong></div>
+  <div><strong>Feedback:</strong> <a href="#">Contact Support</a></div>
+  <div><a href="#">Terms</a> | <a href="#">Privacy</a></div>
+  <div>Data compiled from humanitarian sources.</div>
+</div>
+</footer>
+
+<script>
+
+const data = [
+  {country:"Sudan", amount:11500000, region:"Africa"},
+  {country:"Kenya", amount:3600000, region:"Africa"},
+  {country:"Somalia", amount:2800000, region:"Africa"},
+  {country:"Afghanistan", amount:10000000, region:"Asia"},
+  {country:"Pakistan", amount:3700000, region:"Asia"},
+  {country:"Sri Lanka", amount:3800000, region:"Asia"}
+];
+
+let filtered = [...data];
+let chart;
+
+function updateDashboard(){
+
+  let total = filtered.reduce((a,b)=>a+b.amount,0);
+  let max = filtered.reduce((a,b)=>a.amount>b.amount?a:b);
+  let min = filtered.reduce((a,b)=>a.amount<b.amount?a:b);
+
+  document.getElementById("total").innerText = total.toLocaleString();
+  document.getElementById("highest").innerText = max.country;
+  document.getElementById("lowest").innerText = min.country;
+  document.getElementById("ratio").innerText = (max.amount/min.amount).toFixed(1)+"x";
+
+  document.getElementById("comparison").innerHTML =
+    `${max.country} has the highest allocation (${max.amount.toLocaleString()} USD),
+     compared to ${min.country} (${min.amount.toLocaleString()} USD).
+     This is ${(max.amount/min.amount).toFixed(1)} times higher.`;
+
+  const tbody = document.getElementById("table");
+  tbody.innerHTML="";
+  filtered.forEach(r=>{
+    let tr=document.createElement("tr");
+    tr.innerHTML = `
+      <td>${r.country}</td>
+      <td class="${r.country===max.country?'highlight-max':''}
+                 ${r.country===min.country?'highlight-min':''}">
+        ${r.amount.toLocaleString()}
+      </td>`;
+    tbody.appendChild(tr);
+  });
+
+  if(chart) chart.destroy();
+
+  chart = new Chart(document.getElementById("chart"),{
+    type:"bar",
+    data:{
+      labels:filtered.map(d=>d.country),
+      datasets:[{
+        data:filtered.map(d=>d.amount),
+        backgroundColor:"#009EDB"
+      }]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false}}
+    }
+  });
+}
+
+document.getElementById("filter").addEventListener("change",e=>{
+  filtered = e.target.value==="all"?data:data.filter(d=>d.region===e.target.value);
+  updateDashboard();
+});
+
+updateDashboard();
+
+</script>
+
+</body>
+</html>
