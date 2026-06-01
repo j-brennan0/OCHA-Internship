@@ -1,0 +1,265 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Ukraine Attacks Dashboard</title>
+
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+:root {
+  --primary: #009EDB;
+  --primary-dark: #004987;
+  --bg: #f4f6f8;
+  --card: #ffffff;
+  --text: #1f2a33;
+  --muted: #6b7785;
+  --accent: #D9534F;
+  --border: #e1e6ea;
+  --spacing: 16px;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+}
+
+body {
+  font-family: 'Roboto', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+}
+
+/* HEADER */
+.header {
+  background: var(--primary);
+  color: white;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 24px;
+}
+
+.header img {
+  height: 40px;
+}
+
+.download-btn {
+  background: white;
+  color: var(--primary);
+  padding: 8px 14px;
+  border: none;
+  cursor: pointer;
+  font-size: 14px;
+}
+
+.container {
+  max-width: 1200px;
+  margin: auto;
+  padding: 24px;
+}
+
+/* PAGE TITLE */
+.page-title {
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 20px;
+}
+
+/* GRID */
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 20px;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  padding: 16px;
+  border: 1px solid var(--border);
+}
+
+.card h3 {
+  font-size: 14px;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.card .value {
+  font-size: 24px;
+  font-weight: 700;
+}
+
+/* TABLE */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  text-align: left;
+  padding: 10px;
+  border-bottom: 1px solid var(--border);
+  font-size: 14px;
+}
+
+/* FOOTER */
+.footer {
+  background: #2c3e50;
+  color: #ddd;
+  padding: 20px;
+  margin-top: 40px;
+  font-size: 13px;
+}
+
+.footer a {
+  color: #bbb;
+  text-decoration: none;
+}
+
+.footer-section {
+  margin-bottom: 10px;
+}
+
+</style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+<div class="header">
+  <img src="OCHA Logo_beside_blue (1).png" alt="OCHA Logo">
+
+  <button class="download-btn">
+    Download Dataset
+  </button>
+</div>
+
+<div class="container">
+  <div class="page-title">Russia–Ukraine Attacks on Health Care Dashboard</div>
+
+  <!-- KPI SECTION -->
+  <div class="grid">
+    <div class="card">
+      <h3>Total Attacks</h3>
+      <div class="value">1,200</div>
+    </div>
+
+    <div class="card">
+      <h3>Most Common Attack Type</h3>
+      <div class="value">Heavy Weapons</div>
+    </div>
+
+    <div class="card">
+      <h3>Peak Time</h3>
+      <div class="value">Evening</div>
+    </div>
+
+    <div class="card">
+      <h3>Civilian Impact</h3>
+      <div class="value">High</div>
+    </div>
+  </div>
+
+  <!-- CHARTS -->
+  <div class="grid" style="margin-top:20px;">
+    <div class="card">
+      <h3>Attack Categories</h3>
+      <canvas id="pieChart"></canvas>
+    </div>
+
+    <div class="card">
+      <h3>Attacks by Time of Day</h3>
+      <canvas id="lineChart"></canvas>
+    </div>
+  </div>
+
+  <!-- TABLE -->
+  <div class="card">
+    <h3>Recent Attacks</h3>
+    <table>
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Location</th>
+          <th>Attack Type</th>
+          <th>Victims</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>2024-05-01</td>
+          <td>Kyiv</td>
+          <td>Heavy Weapons</td>
+          <td>5 injured</td>
+        </tr>
+        <tr>
+          <td>2024-05-02</td>
+          <td>Kharkiv</td>
+          <td>Facility Damage</td>
+          <td>2 killed</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+</div>
+
+<!-- FOOTER -->
+<div class="footer">
+  <div class="footer-section">
+    <strong>Feedback and Support</strong> |
+    <a href="#">Contact support</a>
+  </div>
+
+  <div class="footer-section">
+    <strong>Legal:</strong>
+    <a href="#">Terms</a> |
+    <a href="#">Privacy</a> |
+    <a href="#">Data Use</a>
+  </div>
+
+  <div class="footer-section">
+    Data is compiled from multiple sources and may include variations or limitations.
+  </div>
+
+  <div class="footer-section">
+    © OCHA-style dashboard | <a href="#">Back to top</a>
+  </div>
+</div>
+
+<script>
+// PIE CHART
+new Chart(document.getElementById('pieChart'), {
+  type: 'pie',
+  data: {
+    labels: ['Heavy Weapons', 'Individual Weapons', 'Obstruction', 'Other'],
+    datasets: [{
+      data: [70, 10, 10, 10],
+      backgroundColor: ['#009EDB', '#004987', '#6b7785', '#d9534f']
+    }]
+  }
+});
+
+// LINE CHART
+new Chart(document.getElementById('lineChart'), {
+  type: 'line',
+  data: {
+    labels: ['0h','4h','8h','12h','16h','20h'],
+    datasets: [{
+      label: 'Attacks',
+      data: [5, 3, 10, 15, 25, 30],
+      borderColor: '#009EDB',
+      fill: false
+    }]
+  }
+});
+</script>
+
+</body>
+</html>
