@@ -1,0 +1,1099 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>OCHA Contribution Dashboard</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap"
+  />
+
+  <style>
+    :root {
+      --color-primary: #009EDB;
+      --color-primary-dark: #004987;
+      --color-bg: #f4f7f9;
+      --color-surface: #ffffff;
+      --color-surface-muted: #eef3f7;
+      --color-border: #dbe4ea;
+      --color-text: #182430;
+      --color-text-muted: #617282;
+      --color-alert: #b94a48;
+
+      --space-1: 4px;
+      --space-2: 8px;
+      --space-3: 12px;
+      --space-4: 16px;
+      --space-5: 20px;
+      --space-6: 24px;
+      --space-7: 32px;
+      --space-8: 40px;
+
+      --font-xs: 12px;
+      --font-sm: 13px;
+      --font-md: 15px;
+      --font-lg: 20px;
+      --font-xl: 28px;
+      --font-xxl: 34px;
+
+      --radius-sm: 4px;
+      --radius-md: 6px;
+      --container-width: 1240px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Roboto", Arial, sans-serif;
+      color: var(--color-text);
+      background: var(--color-bg);
+      line-height: 1.5;
+    }
+
+    a {
+      color: var(--color-primary-dark);
+      text-decoration: none;
+    }
+
+    a:hover {
+      text-decoration: underline;
+    }
+
+    a:focus-visible,
+    button:focus-visible,
+    select:focus-visible {
+      outline: 2px solid var(--color-primary-dark);
+      outline-offset: 2px;
+    }
+
+    img {
+      display: block;
+      max-width: 100%;
+      height: auto;
+    }
+
+    .container {
+      width: 100%;
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: 0 var(--space-5);
+    }
+
+    /* Header */
+    .global-header {
+      background: var(--color-primary);
+      color: #fff;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.18);
+    }
+
+    .global-header__inner {
+      max-width: var(--container-width);
+      margin: 0 auto;
+      padding: var(--space-4) var(--space-5);
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: var(--space-5);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: var(--space-4);
+      min-width: 0;
+    }
+
+    .brand img {
+      height: 54px;
+      width: auto;
+      object-fit: contain;
+      flex: 0 0 auto;
+    }
+
+    .brand__eyebrow {
+      margin: 0 0 var(--space-1);
+      font-size: var(--font-xs);
+      text-transform: uppercase;
+      letter-spacing: 0.06em;
+      opacity: 0.95;
+    }
+
+    .brand__title {
+      margin: 0;
+      font-size: 18px;
+      font-weight: 700;
+      line-height: 1.2;
+    }
+
+    .header-actions {
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: var(--space-2);
+    }
+
+    .button {
+      appearance: none;
+      border: 1px solid rgba(255,255,255,0.9);
+      border-radius: var(--radius-sm);
+      padding: 10px 14px;
+      font: inherit;
+      font-weight: 500;
+      background: #fff;
+      color: var(--color-primary-dark);
+      cursor: pointer;
+    }
+
+    .button:hover {
+      background: #f5fbfe;
+    }
+
+    .download-group {
+      position: relative;
+    }
+
+    .download-menu {
+      position: absolute;
+      top: calc(100% + 6px);
+      right: 0;
+      min-width: 260px;
+      display: none;
+      background: #fff;
+      color: var(--color-text);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: var(--space-2);
+      z-index: 20;
+    }
+
+    .download-menu.open {
+      display: block;
+    }
+
+    .download-menu button {
+      width: 100%;
+      padding: 10px 12px;
+      border: 0;
+      background: transparent;
+      text-align: left;
+      font: inherit;
+      cursor: pointer;
+      border-radius: var(--radius-sm);
+      color: var(--color-text);
+    }
+
+    .download-menu button:hover {
+      background: var(--color-surface-muted);
+    }
+
+    .internal-banner {
+      font-size: var(--font-xs);
+      padding: 4px 8px;
+      border: 1px solid rgba(255,255,255,0.55);
+      border-radius: var(--radius-sm);
+      background: rgba(255,255,255,0.12);
+    }
+
+    /* Page header */
+    .page-header {
+      padding: var(--space-7) 0 var(--space-5);
+    }
+
+    .page-header h1 {
+      margin: 0 0 var(--space-3);
+      font-size: var(--font-xxl);
+      line-height: 1.15;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+
+    .page-header p {
+      margin: 0;
+      max-width: 900px;
+      color: var(--color-text-muted);
+      font-size: var(--font-md);
+    }
+
+    .meta-row {
+      margin-top: var(--space-4);
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+      color: var(--color-text-muted);
+      font-size: var(--font-sm);
+    }
+
+    .meta-row span + span::before {
+      content: "•";
+      margin-right: var(--space-3);
+      color: #c7d1d8;
+    }
+
+    /* Toolbar */
+    .toolbar {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-4);
+      align-items: end;
+      padding-bottom: var(--space-5);
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-2);
+      min-width: 180px;
+    }
+
+    .field label {
+      font-size: var(--font-sm);
+      font-weight: 500;
+      color: var(--color-text-muted);
+    }
+
+    .field select {
+      appearance: none;
+      background: #fff;
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-sm);
+      padding: 10px 12px;
+      font: inherit;
+      color: var(--color-text);
+    }
+
+    /* Main layout */
+    .main-grid {
+      display: grid;
+      grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.25fr);
+      gap: var(--space-6);
+      align-items: start;
+    }
+
+    .left-stack {
+      display: flex;
+      flex-direction: column;
+      gap: var(--space-6);
+    }
+
+    .panel {
+      background: var(--color-surface);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      padding: var(--space-5);
+    }
+
+    .panel__header {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: var(--space-4);
+      margin-bottom: var(--space-4);
+    }
+
+    .panel__title {
+      margin: 0;
+      font-size: var(--font-lg);
+      line-height: 1.2;
+      font-weight: 700;
+      color: var(--color-primary-dark);
+    }
+
+    .panel__meta {
+      font-size: var(--font-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* KPI cards */
+    .kpi-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-4);
+    }
+
+    .kpi-card {
+      background: #fff;
+      border: 1px solid #e7edf2;
+      border-radius: var(--radius-sm);
+      padding: var(--space-4);
+      min-height: 110px;
+    }
+
+    .kpi-label {
+      margin: 0 0 var(--space-2);
+      font-size: var(--font-sm);
+      color: var(--color-text-muted);
+    }
+
+    .kpi-value {
+      margin: 0;
+      font-size: var(--font-xl);
+      font-weight: 700;
+      line-height: 1.2;
+      word-break: break-word;
+    }
+
+    .kpi-sub {
+      margin-top: var(--space-2);
+      font-size: var(--font-xs);
+      color: var(--color-text-muted);
+    }
+
+    /* Top countries table */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: var(--font-sm);
+    }
+
+    th, td {
+      text-align: left;
+      padding: 10px 8px;
+      border-bottom: 1px solid #e8eef3;
+      vertical-align: top;
+    }
+
+    th {
+      font-weight: 500;
+      color: var(--color-text-muted);
+      background: #fafcfd;
+    }
+
+    .country-table td:first-child {
+      width: 40px;
+      color: var(--color-primary-dark);
+      font-weight: 700;
+    }
+
+    /* Chart */
+    .chart {
+      height: 360px;
+      display: grid;
+      grid-template-columns: repeat(4, minmax(56px, 1fr));
+      gap: var(--space-4);
+      align-items: end;
+      padding-top: var(--space-4);
+      border-top: 1px solid #e8eef3;
+    }
+
+    .bar-group {
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      gap: var(--space-2);
+      min-width: 0;
+    }
+
+    .bar-value {
+      font-size: 11px;
+      color: var(--color-text-muted);
+      text-align: center;
+      min-height: 22px;
+    }
+
+    .bar {
+      width: 100%;
+      max-width: 64px;
+      background: var(--color-primary);
+      border-radius: 4px 4px 0 0;
+      min-height: 8px;
+    }
+
+    .bar-label {
+      font-size: var(--font-xs);
+      color: #4b5563;
+      text-align: center;
+      word-break: break-word;
+    }
+
+    /* Data table */
+    .table-panel {
+      margin-top: var(--space-6);
+    }
+
+    .table-scroll {
+      overflow-x: auto;
+    }
+
+    .data-table {
+      min-width: 900px;
+    }
+
+    .status {
+      margin-top: var(--space-4);
+      font-size: var(--font-sm);
+      color: var(--color-text-muted);
+    }
+
+    .status.error {
+      color: var(--color-alert);
+    }
+
+    /* Footer */
+    .site-footer {
+      margin-top: var(--space-8);
+      background: #2d3b47;
+      color: #dce4ea;
+      padding: var(--space-7) 0;
+    }
+
+    .footer-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: var(--space-6);
+    }
+
+    .footer-title {
+      margin: 0 0 var(--space-3);
+      font-size: var(--font-sm);
+      text-transform: uppercase;
+      letter-spacing: 0.04em;
+      color: #fff;
+    }
+
+    .footer-copy,
+    .footer-links {
+      font-size: var(--font-sm);
+    }
+
+    .footer-links a {
+      color: #fff;
+    }
+
+    .social-row {
+      display: flex;
+      flex-wrap: wrap;
+      gap: var(--space-3);
+    }
+
+    .social-link {
+      display: inline-flex;
+      align-items: center;
+      gap: var(--space-2);
+      color: #fff;
+    }
+
+    .social-icon {
+      width: 16px;
+      height: 16px;
+      fill: currentColor;
+      flex: 0 0 auto;
+    }
+
+    @media (max-width: 980px) {
+      .main-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+      .global-header__inner {
+        flex-direction: column;
+        align-items: stretch;
+      }
+
+      .header-actions {
+        align-items: flex-start;
+      }
+
+      .page-header h1 {
+        font-size: 28px;
+      }
+
+      .kpi-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .footer-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .container {
+        padding: 0 var(--space-4);
+      }
+    }
+  </style>
+</head>
+<body>
+  <a id="top"></a>
+
+  <header class="global-header">
+    <div class="global-header__inner">
+      <div class="brand">
+        <img src="OCHA Logo_beside_blue.png" alt="OCHA logo" />
+        <div>
+          <p class="brand__eyebrow">United Nations Office for the Coordination of Humanitarian Affairs</p>
+          <p class="brand__title">Contribution Reporting Dashboard</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div class="download-group">
+          <button class="button" id="downloadToggle" type="button" aria-haspopup="true" aria-expanded="false">
+            Download dataset ▾
+          </button>
+          <div class="download-menu" id="downloadMenu" role="menu">
+            <button id="downloadCsv" type="button">Normalized data (CSV)</button>
+            <button id="downloadJson" type="button">Normalized data (JSON)</button>
+            <button id="downloadRaw" type="button">Raw proxy payload (JSON)</button>
+          </div>
+        </div>
+        <div class="internal-banner">For Internal Use Only</div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="page-header">
+      <h1>Contribution amount by country and year</h1>
+      <p>
+        This version consumes the local <code>/api</code> proxy, filters to allocation-style USD rows, and renders a high-level contribution dashboard aligned with your sketch.
+      </p>
+      <div class="meta-row">
+        <span id="metaEndpoint">Endpoint: pending</span>
+        <span id="metaRows">Rows: 0</span>
+        <span id="metaMetric">Metric: allocations (USD)</span>
+      </div>
+    </section>
+
+    <section class="toolbar" aria-label="filters">
+      <div class="field">
+        <label for="yearSelect">Year filter</label>
+        <select id="yearSelect">
+          <option value="">All years</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="countrySelect">Country filter</label>
+        <select id="countrySelect">
+          <option value="">All countries</option>
+        </select>
+      </div>
+    </section>
+
+    <section class="main-grid">
+      <div class="left-stack">
+        <article class="panel">
+          <div class="panel__header">
+            <h2 class="panel__title">KPI</h2>
+            <div class="panel__meta" id="kpiMeta">Contribution-focused summary</div>
+          </div>
+
+          <div class="kpi-grid">
+            <div class="kpi-card">
+              <p class="kpi-label">Total contribution</p>
+              <p class="kpi-value" id="kpiContribution">—</p>
+              <div class="kpi-sub">Sum of allocation values in current filter</div>
+            </div>
+
+            <div class="kpi-card">
+              <p class="kpi-label">Countries covered</p>
+              <p class="kpi-value" id="kpiCountries">0</p>
+              <div class="kpi-sub">Unique countries in current filter</div>
+            </div>
+
+            <div class="kpi-card">
+              <p class="kpi-label">Years available</p>
+              <p class="kpi-value" id="kpiYears">0</p>
+              <div class="kpi-sub">Unique years in current filter</div>
+            </div>
+
+            <div class="kpi-card">
+              <p class="kpi-label">Top country</p>
+              <p class="kpi-value" id="kpiTopCountry">—</p>
+              <div class="kpi-sub">Highest allocation total in current filter</div>
+            </div>
+          </div>
+        </article>
+
+        <article class="panel">
+          <div class="panel__header">
+            <h2 class="panel__title">Summary of top 3 countries</h2>
+            <div class="panel__meta" id="topSummaryMeta">Ranked by allocation value</div>
+          </div>
+
+          <table class="country-table">
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Country</th>
+                <th>Contribution</th>
+              </tr>
+            </thead>
+            <tbody id="topCountries">
+              <tr>
+                <td colspan="3">No data loaded yet.</td>
+              </tr>
+            </tbody>
+          </table>
+        </article>
+      </div>
+
+      <article class="panel">
+        <div class="panel__header">
+          <h2 class="panel__title">Vertical bar chart showing contribution amount for top 4 countries in 2021</h2>
+          <div class="panel__meta" id="chartMeta">Top 4 countries by allocations in 2021</div>
+        </div>
+
+        <div id="chart" class="chart" aria-label="bar chart"></div>
+      </article>
+    </section>
+
+    <section class="panel table-panel">
+      <div class="panel__header">
+        <h2 class="panel__title">Reporting data table</h2>
+        <div class="panel__meta" id="tableMeta">Showing normalized allocation rows</div>
+      </div>
+
+      <div class="table-scroll">
+        <table class="data-table">
+          <thead>
+            <tr>
+              <th>Country</th>
+              <th>Year</th>
+              <th>Name</th>
+              <th>Figure ID</th>
+              <th>Contribution</th>
+              <th>Unit</th>
+              <th>Source</th>
+              <th>Provider</th>
+            </tr>
+          </thead>
+          <tbody id="tableBody">
+            <tr>
+              <td colspan="8">No data loaded yet.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div id="status" class="status">Loading dashboard data…</div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container">
+      <div class="footer-grid">
+        <section>
+          <h3 class="footer-title">Feedback and Contact</h3>
+          <div class="footer-copy">
+            Support:
+            <a href="mailto:support@unocha.org">support@unocha.org</a>
+          </div>
+          <div class="footer-copy" style="margin-top: 8px;">
+            Creator contact:
+            <a href="mailto:first.last@un.org">first.last@un.org</a>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="footer-title">Legal</h3>
+          <div class="footer-links">
+            <a href="https://www.un.org/en/about-us/terms-of-use" target="_blank" rel="noopener">Terms of Use</a><br />
+            <a href="https://www.un.org/en/about-us/privacy-notice" target="_blank" rel="noopener">Privacy Policy</a><br />
+            <a href="https://www.un.org/en/about-us/copyright" target="_blank" rel="noopener">Copyright</a>
+          </div>
+          <div class="footer-copy" style="margin-top: 8px;">
+            Confirm source-specific reuse conditions before redistribution.
+          </div>
+        </section>
+
+        <section>
+          <h3 class="footer-title">Data & Attribution</h3>
+          <div class="footer-copy">
+            Data comes from multiple OCHA key-figure records and may vary in completeness, refresh timing, or level of detail across countries and years.
+          </div>
+          <div class="footer-copy" style="margin-top: 8px;">
+            API proxy target: <code>/api</code>
+          </div>
+        </section>
+
+        <section>
+          <h3 class="footer-title">Follow OCHA</h3>
+          <div class="social-row">
+            <a class="social-link" href="#" aria-label="X placeholder">
+              <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M18.9 2H22l-6.8 7.7L23 22h-6.1l-4.8-6.4L6.4 22H3.3l7.3-8.3L1 2h6.2l4.3 5.8L18.9 2zM17.8 20h1.7L7.1 3.9H5.3L17.8 20z"></path></svg>
+              <span>X</span>
+            </a>
+
+            <a class="social-link" href="https://www.linkedin.com/company/united-nations-ocha/" target="_blank" rel="noopener" aria-label="LinkedIn">
+              <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M4.98 3.5A2.48 2.48 0 1 1 5 8.46 2.48 2.48 0 0 1 4.98 3.5zM3 9h4v12H3zM9 9h3.8v1.7h.1c.5-.9 1.8-2.1 3.8-2.1 4 0 4.8 2.6 4.8 6v6.4h-4v-5.7c0-1.4 0-3.1-1.9-3.1s-2.2 1.5-2.2 3v5.8H9z"></path></svg>
+              <span>LinkedIn</span>
+            </a>
+
+            <a class="social-link" href="https://www.youtube.com/ochafilms" target="_blank" rel="noopener" aria-label="YouTube">
+              <svg class="social-icon" viewBox="0 0 24 24" aria-hidden="true"><path d="M23.5 6.2a3 3 0 0 0-2.1-2.1C19.7 3.6 12 3.6 12 3.6s-7.7 0-9.4.5A3 3 0 0 0 .5 6.2 31.7 31.7 0 0 0 0 12a31.7 31.7 0 0 0 .5 5.8 3 3 0 0 0 2.1 2.1c1.7.5 9.4.5 9.4.5s7.7 0 9.4-.5a3 3 0 0 0 2.1-2.1A31.7 31.7 0 0 0 24 12a31.7 31.7 0 0 0-.5-5.8zM9.8 15.5v-7L16 12l-6.2 3.5z"></path></svg>
+              <span>YouTube</span>
+            </a>
+          </div>
+        </section>
+      </div>
+    </div>
+  </footer>
+
+  <script>
+    const DEFAULT_CHART_YEAR = "2021";
+
+    const els = {
+      metaEndpoint: document.getElementById("metaEndpoint"),
+      metaRows: document.getElementById("metaRows"),
+      yearSelect: document.getElementById("yearSelect"),
+      countrySelect: document.getElementById("countrySelect"),
+      kpiContribution: document.getElementById("kpiContribution"),
+      kpiCountries: document.getElementById("kpiCountries"),
+      kpiYears: document.getElementById("kpiYears"),
+      kpiTopCountry: document.getElementById("kpiTopCountry"),
+      topCountries: document.getElementById("topCountries"),
+      chart: document.getElementById("chart"),
+      tableBody: document.getElementById("tableBody"),
+      status: document.getElementById("status"),
+      chartMeta: document.getElementById("chartMeta"),
+      tableMeta: document.getElementById("tableMeta"),
+      downloadToggle: document.getElementById("downloadToggle"),
+      downloadMenu: document.getElementById("downloadMenu"),
+      downloadCsv: document.getElementById("downloadCsv"),
+      downloadJson: document.getElementById("downloadJson"),
+      downloadRaw: document.getElementById("downloadRaw")
+    };
+
+    let APP_STATE = {
+      rawPayload: null,
+      rows: []
+    };
+
+    function setStatus(text, isError = false) {
+      els.status.textContent = text;
+      els.status.classList.toggle("error", isError);
+    }
+
+    function escapeHtml(str) {
+      return String(str ?? "")
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#39;");
+    }
+
+    function parseNumericValue(value) {
+      if (typeof value === "number") return Number.isFinite(value) ? value : 0;
+      if (typeof value === "string") {
+        const cleaned = value.replace(/[$,\s]/g, "");
+        const num = Number(cleaned);
+        return Number.isFinite(num) ? num : 0;
+      }
+      return 0;
+    }
+
+    function formatNumber(num) {
+      return new Intl.NumberFormat("en-US", {
+        maximumFractionDigits: 0
+      }).format(num || 0);
+    }
+
+    function formatCompact(num) {
+      return new Intl.NumberFormat("en-US", {
+        notation: "compact",
+        maximumFractionDigits: 1
+      }).format(num || 0);
+    }
+
+    function uniqueValues(rows, field) {
+      return [...new Set(rows.map(r => r[field]).filter(Boolean))]
+        .sort((a, b) => String(a).localeCompare(String(b), undefined, { numeric: true }));
+    }
+
+    function normalizeRows(rows) {
+      return rows
+        .map(r => ({
+          id: r.id || "",
+          country: r.country || "Unknown",
+          iso3: r.iso3 || "",
+          year: String(r.year || ""),
+          name: r.name || "",
+          value: parseNumericValue(r.value),
+          updated: r.updated || "",
+          url: r.url || "",
+          source: r.source || "—",
+          provider: r.provider || "—",
+          description: r.description || "",
+          value_type: r.value_type || "",
+          unit: r.unit || "",
+          figure_id: r.figure_id || "",
+          archived: Boolean(r.archived)
+        }))
+        .filter(r => r.country && r.year);
+    }
+
+    function filterToAllocations(rows) {
+      return rows.filter(r => {
+        const isAllocationFigure = String(r.figure_id).toLowerCase() === "allocations";
+        const usdOk = !r.unit || String(r.unit).toUpperCase() === "USD";
+        return isAllocationFigure && usdOk;
+      });
+    }
+
+    function aggregateByCountry(rows) {
+      const map = new Map();
+      rows.forEach(r => {
+        map.set(r.country, (map.get(r.country) || 0) + r.value);
+      });
+      return [...map.entries()].map(([country, value]) => ({ country, value }));
+    }
+
+    function applyFilters(rows) {
+      const selectedYear = els.yearSelect.value;
+      const selectedCountry = els.countrySelect.value;
+
+      return rows.filter(r => {
+        const yearOk = !selectedYear || r.year === selectedYear;
+        const countryOk = !selectedCountry || r.country === selectedCountry;
+        return yearOk && countryOk;
+      });
+    }
+
+    function populateFilters(rows) {
+      const years = uniqueValues(rows, "year");
+      const countries = uniqueValues(rows, "country");
+
+      const currentYear = els.yearSelect.value;
+      const currentCountry = els.countrySelect.value;
+
+      els.yearSelect.innerHTML = [
+        `<option value="">All years</option>`,
+        ...years.map(y => `<option value="${escapeHtml(y)}">${escapeHtml(y)}</option>`)
+      ].join("");
+
+      els.countrySelect.innerHTML = [
+        `<option value="">All countries</option>`,
+        ...countries.map(c => `<option value="${escapeHtml(c)}">${escapeHtml(c)}</option>`)
+      ].join("");
+
+      if (years.includes(currentYear)) els.yearSelect.value = currentYear;
+      if (countries.includes(currentCountry)) els.countrySelect.value = currentCountry;
+    }
+
+    function renderKpis(rows) {
+      const total = rows.reduce((sum, r) => sum + r.value, 0);
+      const countries = uniqueValues(rows, "country");
+      const years = uniqueValues(rows, "year");
+      const ranked = aggregateByCountry(rows).sort((a, b) => b.value - a.value);
+
+      els.kpiContribution.textContent = formatCompact(total);
+      els.kpiCountries.textContent = formatNumber(countries.length);
+      els.kpiYears.textContent = formatNumber(years.length);
+      els.kpiTopCountry.textContent = ranked[0] ? ranked[0].country : "—";
+    }
+
+    function renderTopCountries(rows) {
+      const ranked = aggregateByCountry(rows)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 3);
+
+      if (!ranked.length) {
+        els.topCountries.innerHTML = `<tr><td colspan="3">No data available for the current filter.</td></tr>`;
+        return;
+      }
+
+      els.topCountries.innerHTML = ranked.map((item, index) => `
+        <tr>
+          <td>${index + 1}</td>
+          <td>${escapeHtml(item.country)}</td>
+          <td>${formatNumber(item.value)}</td>
+        </tr>
+      `).join("");
+    }
+
+    function renderChart(allFilteredRows) {
+      const rows2021 = allFilteredRows.filter(r => r.year === DEFAULT_CHART_YEAR);
+
+      const top4 = aggregateByCountry(rows2021)
+        .sort((a, b) => b.value - a.value)
+        .slice(0, 4);
+
+      els.chart.innerHTML = "";
+
+      if (!top4.length) {
+        els.chart.innerHTML = `<div style="font-size:13px;color:#617282;">No ${DEFAULT_CHART_YEAR} allocation data available for the bar chart.</div>`;
+        return;
+      }
+
+      const maxValue = Math.max(...top4.map(r => r.value), 1);
+
+      top4.forEach(item => {
+        const group = document.createElement("div");
+        group.className = "bar-group";
+
+        const valueLabel = document.createElement("div");
+        valueLabel.className = "bar-value";
+        valueLabel.textContent = formatCompact(item.value);
+
+        const bar = document.createElement("div");
+        bar.className = "bar";
+        bar.style.height = `${Math.max(8, (item.value / maxValue) * 240)}px`;
+        bar.title = `${item.country}: ${formatNumber(item.value)}`;
+
+        const countryLabel = document.createElement("div");
+        countryLabel.className = "bar-label";
+        countryLabel.textContent = item.country;
+
+        group.appendChild(valueLabel);
+        group.appendChild(bar);
+        group.appendChild(countryLabel);
+
+        els.chart.appendChild(group);
+      });
+
+      els.chartMeta.textContent = `Top 4 countries by allocations in ${DEFAULT_CHART_YEAR}`;
+    }
+
+    function renderTable(rows) {
+      const sorted = [...rows].sort((a, b) => {
+        const yearSort = String(b.year).localeCompare(String(a.year), undefined, { numeric: true });
+        if (yearSort !== 0) return yearSort;
+        return b.value - a.value;
+      });
+
+      if (!sorted.length) {
+        els.tableBody.innerHTML = `<tr><td colspan="8">No rows available for the current filter.</td></tr>`;
+        return;
+      }
+
+      els.tableBody.innerHTML = sorted.slice(0, 100).map(r => `
+        <tr>
+          <td>${escapeHtml(r.country)}</td>
+          <td>${escapeHtml(r.year)}</td>
+          <td>${escapeHtml(r.name || "—")}</td>
+          <td>${escapeHtml(r.figure_id || "—")}</td>
+          <td>${formatNumber(r.value)}</td>
+          <td>${escapeHtml(r.unit || "—")}</td>
+          <td>${escapeHtml(r.source || "—")}</td>
+          <td>${escapeHtml(r.provider || "—")}</td>
+        </tr>
+      `).join("");
+
+      els.tableMeta.textContent = `Showing ${Math.min(sorted.length, 100)} normalized allocation rows`;
+    }
+
+    function rerender() {
+      const allocationRows = filterToAllocations(APP_STATE.rows);
+      const filtered = applyFilters(allocationRows);
+
+      renderKpis(filtered);
+      renderTopCountries(filtered);
+      renderChart(filtered);
+      renderTable(filtered);
+    }
+
+    function downloadTextFile(filename, mimeType, content) {
+      const blob = new Blob([content], { type: mimeType });
+      const link = document.createElement("a");
+      link.href = URL.createObjectURL(blob);
+      link.download = filename;
+      link.click();
+      URL.revokeObjectURL(link.href);
+    }
+
+    function toCsv(rows) {
+      const headers = ["country", "year", "name", "figure_id", "value", "unit", "source", "provider"];
+      const lines = [
+        headers.join(","),
+        ...rows.map(r => [
+          `"${String(r.country).replaceAll('"', '""')}"`,
+          `"${String(r.year).replaceAll('"', '""')}"`,
+          `"${String(r.name).replaceAll('"', '""')}"`,
+          `"${String(r.figure_id).replaceAll('"', '""')}"`,
+          r.value,
+          `"${String(r.unit).replaceAll('"', '""')}"`,
+          `"${String(r.source).replaceAll('"', '""')}"`,
+          `"${String(r.provider).replaceAll('"', '""')}"`
+        ].join(","))
+      ];
+      return lines.join("\n");
+    }
+
+    async function loadDashboard() {
+      try {
+        setStatus("Loading dashboard data…");
+
+        const response = await fetch("/api");
+        const payload = await response.json();
+
+        console.log("Proxy payload:", payload);
+
+        const rawRows = Array.isArray(payload.rows) ? payload.rows : [];
+        const normalized = normalizeRows(rawRows);
+
+        APP_STATE.rawPayload = payload;
+        APP_STATE.rows = normalized;
+
+        const allocationRows = filterToAllocations(normalized);
+
+        els.metaEndpoint.textContent = `Endpoint: ${payload.endpoint || "/api fallback"}`;
+        els.metaRows.textContent = `Rows: ${allocationRows.length}`;
+
+        populateFilters(allocationRows);
+        rerender();
+
+        if (payload.ok) {
+          setStatus(`Loaded live data from ${payload.endpoint}`);
+        } else {
+          setStatus("Live endpoint did not return non-empty rows. Proxy fallback may be in use.", true);
+        }
+      } catch (error) {
+        console.error(error);
+        setStatus("Error loading dashboard data. Check the browser console.", true);
+      }
+    }
+
+    /* Download menu */
+    els.downloadToggle.addEventListener("click", () => {
+      const isOpen = els.downloadMenu.classList.toggle("open");
+      els.downloadToggle.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    document.addEventListener("click", (event) => {
+      const clickedInside = els.downloadMenu.contains(event.target) || els.downloadToggle.contains(event.target);
+      if (!clickedInside) {
+        els.downloadMenu.classList.remove("open");
+        els.downloadToggle.setAttribute("aria-expanded", "false");
+      }
+    });
+
+    els.downloadCsv.addEventListener("click", () => {
+      const rows = filterToAllocations(APP_STATE.rows);
+      downloadTextFile("ocha_allocations_normalized.csv", "text/csv;charset=utf-8", toCsv(rows));
+    });
+
+    els.downloadJson.addEventListener("click", () => {
+      const rows = filterToAllocations(APP_STATE.rows);
+      downloadTextFile("ocha_allocations_normalized.json", "application/json;charset=utf-8", JSON.stringify(rows, null, 2));
+    });
+
+    els.downloadRaw.addEventListener("click", () => {
+      downloadTextFile("ocha_proxy_payload.json", "application/json;charset=utf-8", JSON.stringify(APP_STATE.rawPayload, null, 2));
+    });
+
+    els.yearSelect.addEventListener("change", rerender);
+    els.countrySelect.addEventListener("change", rerender);
+
+    loadDashboard();
+  </script>
+</body>
+</html>
